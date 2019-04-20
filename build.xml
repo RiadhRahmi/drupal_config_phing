@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="config management project" default="build" basedir="." description="Build site">
+    <target name="build">
+        <exec command="git pull" dir="."
+              description="Fetch data from cvs repository." logoutput="true"/>
+        <exec command="composer install --no-interaction" dir="."
+              description="Install missing composer packages." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y config-import" dir="web"
+              description="Import drupal configuration." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y updb" dir="web"
+              description="Run drupal update database hooks." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y entup" dir="web"
+              description="Run drupal entity update hooks." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y cr" dir="web"
+              description="Rebuild the cache." logoutput="true"/>
+    </target>
+
+
+    <target name="sync">
+        <exec command="../vendor/bin/drush -y sql-drop" dir="web"
+              description="Drop the database." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y sql-sync @stage @self" dir="web"
+              description="Sync database from stage." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y cr" dir="web"
+              description="Rebuild the cache." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y cim" dir="web"
+              description="Import drupal configuration." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y updb" dir="web"
+              description="Run drupal update database hooks." logoutput="true"/>
+        <exec command="../vendor/bin/drush -y entup" dir="web"
+              description="Run drupal entity update hooks." logoutput="true"/>
+    </target>
+
+    <target name="clear" description="Rebuild the cache">
+        <echo msg="Rebuild the cache"/>
+        <exec command=".\bin\drush -y cr" description="Rebuild the cache." logoutput="true"/>
+    </target>
+
+
+    <target name="backup" depends="clear">
+        <tstamp>
+            <format property="DATE" pattern="%Y-%m-%dT%H-%M-%S"/>
+        </tstamp>
+        <mkdir dir="backup"/>
+        <echo msg="Export backup"/>
+        <exec command=".\bin\drush --gzip sql-dump --result-file=backup/${phing.project.name}-${DATE}.sql"
+              description="" logoutput="true"/>
+    </target>
+
+    <target name="restore">
+        <echo msg="Fetching backup files..."/>
+        <exec command="ls backup -t1 | head -n1" outputProperty="backup.file"/>
+        <echo msg="Clear DB"/>
+        <exec command=".\bin\drush sql-drop --yes " logoutput="true"/>
+        <echo msg="Import file: ${backup.file}"/>
+        <exec command="gzip -dc backup/${backup.file} | .\bin\drush sql-cli" logoutput="true"/>
+        <phingcall target="clear"/>
+    </target>
+
+
+    <target name="deploy">
+        <exec command="git reset --hard HEAD" logoutput="true"/>
+        <exec command="git pull" dir="."
+              description="Fetch data from cvs repository." logoutput="true"/>
+        <exec command="composer install --no-interaction" dir="."
+              description="Install missing composer packages." logoutput="true"/>
+        <exec command="./bin/drush -y config-import" dir="web"
+              description="Import drupal configuration." logoutput="true"/>
+        <exec command="./bin/drush -y updb"
+              description="Run drupal update database hooks." logoutput="true"/>
+        <exec command="./bin/drush -y entup"
+              description="Run drupal entity update hooks." logoutput="true"/>
+        <!--<exec command="chown ${server.user}:${server.group} * -R"  logoutput="true"/>-->
+    </target>
+
+
+</project>
