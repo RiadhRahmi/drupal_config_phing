@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="config management project" default="build" basedir="." description="Build site">
+<project name="configmanagementproject" default="build" basedir="." description="Build site">
     <target name="build">
         <exec command="git pull" dir="."
               description="Fetch data from cvs repository." logoutput="true"/>
@@ -43,7 +43,7 @@
         </tstamp>
         <mkdir dir="backup"/>
         <echo msg="Export backup"/>
-        <exec command=".\bin\drush --gzip sql-dump --result-file=backup/${phing.project.name}-${DATE}.sql"
+        <exec command="vendor\bin\drush --gzip sql-dump --result-file=backup/${phing.project.name}-${DATE}.sql"
               description="" logoutput="true"/>
     </target>
 
