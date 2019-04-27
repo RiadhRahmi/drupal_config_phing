@@ -1,0 +1,21 @@
+uuid: 45448dc1-3231-4bc5-b9e3-10a8e201f846
+langcode: en
+status: true
+dependencies:
+  config:
+    - contact.form.contact
+    - field.storage.contact_message.field_message
+  module:
+    - text
+id: contact_message.contact.field_message
+field_name: field_message
+entity_type: contact_message
+bundle: contact
+label: Message
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

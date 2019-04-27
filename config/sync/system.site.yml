@@ -1,7 +1,7 @@
 uuid: de31dfe9-fbb4-4562-9335-8ca391ebeff3
-name: 'Test Configuration'
-mail: teste@example.fr
-slogan: ''
+name: 'Configuration Management'
+mail: rahmiriadh@example.fr
+slogan: '#Configuration Management'
 page:
   403: ''
   404: ''

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="configmanagementproject" default="build" basedir="." description="Build site">
+    <property name="phing.backupDir" value="D:/workspace/web/drupal/configtuto/backup" />
     <target name="build">
         <exec command="git pull" dir="."
               description="Fetch data from cvs repository." logoutput="true"/>
@@ -43,8 +44,8 @@
         </tstamp>
         <mkdir dir="backup"/>
         <echo msg="Export backup"/>
-        <exec command="vendor\bin\drush --gzip sql-dump --result-file=backup/${phing.project.name}-${DATE}.sql"
-              description="" logoutput="true"/>
+        <exec command="vendor\bin\drush --gzip sql-dump --result-file=${phing.backupDir}/${phing.project.name}-${DATE}.sql"
+              description="backup database" logoutput="true"/>
     </target>
 
     <target name="restore">

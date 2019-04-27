@@ -1,0 +1,12 @@
+uuid: c88c7629-df1a-4eb1-89f6-96db87de766d
+langcode: en
+status: true
+dependencies: {  }
+id: contact
+label: Contact
+recipients:
+  - rahmiriadh@gmail.com
+reply: ''
+weight: 0
+message: ''
+redirect: ''
