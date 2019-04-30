@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="configmanagementproject" default="build" basedir="." description="Build site">
-    <property name="phing.backupDir" value="D:/workspace/web/drupal/configtuto/backup" />
+		<property name="URI.base" value="./"/>
+        <resolvepath propertyName="URI.base" file="${URI.base}"/>
+		<property name="URI.backup" value="${URI.base}/backup"/>
+
+
     <target name="build">
         <exec command="git pull" dir="."
               description="Fetch data from cvs repository." logoutput="true"/>
@@ -34,7 +38,7 @@
 
     <target name="clear" description="Rebuild the cache">
         <echo msg="Rebuild the cache"/>
-        <exec command=".\bin\drush -y cr" description="Rebuild the cache." logoutput="true"/>
+        <exec command="vendor\bin\drush cr" description="Rebuild the cache." logoutput="true"/>
     </target>
 
 
@@ -44,17 +48,17 @@
         </tstamp>
         <mkdir dir="backup"/>
         <echo msg="Export backup"/>
-        <exec command="vendor\bin\drush --gzip sql-dump --result-file=${phing.backupDir}/${phing.project.name}-${DATE}.sql"
+        <exec command="vendor\bin\drush --gzip sql-dump --result-file=${URI.backup}/${phing.project.name}-${DATE}.sql"
               description="backup database" logoutput="true"/>
     </target>
 
-    <target name="restore">
+    <target name="restore" depends="clear">
         <echo msg="Fetching backup files..."/>
         <exec command="ls backup -t1 | head -n1" outputProperty="backup.file"/>
         <echo msg="Clear DB"/>
-        <exec command=".\bin\drush sql-drop --yes " logoutput="true"/>
+        <exec command="vendor\bin\drush sql-drop --yes " logoutput="true"/>
         <echo msg="Import file: ${backup.file}"/>
-        <exec command="gzip -dc backup/${backup.file} | .\bin\drush sql-cli" logoutput="true"/>
+        <exec command="gzip -dc ${URI.backup}/${backup.file} | vendor\bin\drush sql-cli" logoutput="true"/>
         <phingcall target="clear"/>
     </target>
 
